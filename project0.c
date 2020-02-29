@@ -11,9 +11,9 @@ struct Node
 };
 
 //structs for mergeSort
-struct Node* SortMerge(struct Node* x, struct Node* y);
-void Split(struct Node* s,
-                    struct Node** fR, struct Node** bR);
+struct Node* SortedMerge(struct Node* a, struct Node* b);
+void FrontBackSplit(struct Node* source,
+                    struct Node** frontRef, struct Node** backRef);
 /*Insert to the end of linked list and increment occurnece accordingly */
 void insert(struct Node** head_ref, char *new_data)
 {
@@ -83,48 +83,48 @@ void printList(struct Node *node)
 	}
 }
 /*split the list for sorting */
-void Split(struct Node* s,
-                    struct Node** fR, struct Node** bR)
+void FrontBackSplit(struct Node* source,
+                    struct Node** frontRef, struct Node** backRef)
 {
 	//declare nodes for sorting
-    struct Node* fst;
-    struct Node* slw;
-    slw = s;
-    fst = s->next;
+    struct Node* fast;
+    struct Node* slow;
+    slow = source;
+    fast = source->next;
 
     /* Advance 'fast' two nodes, and advance 'slow' one node */
-    while (fst != NULL) {
-        fst = fst->next;
-        if (fst != NULL) {
-            slw = slw->next;
-            fst = fst->next;
+    while (fast != NULL) {
+        fast = fast->next;
+        if (fast != NULL) {
+            slow = slow->next;
+            fast = fast->next;
         }
     }
-    *fR = s;
-    *bR = slw->next;
-    slw->next = NULL;
+    *frontRef = source;
+    *backRef = slow->next;
+    slow->next = NULL;
 }
 /*Sorted Merge Method*/
-struct Node* SortMerge(struct Node* x, struct Node* y)
+struct Node* SortedMerge(struct Node* a, struct Node* b)
 {
 // create node and intialize to null    
 struct Node* result = NULL;
 
-    if (x == NULL)
-        return (y);
-    else if (y == NULL)
-        return (x);
+    if (a == NULL)
+        return (b);
+    else if (b == NULL)
+        return (a);
 
     /* Pick either a or b, and recur */
-    if (x->data >= y->data) 
+    if (a->data >= b->data) 
     {
-        result = x;
-        result->next = SortMerge(x->next, y);
+        result = a;
+        result->next = SortedMerge(a->next, b);
     }
     else 
     {
-        result = y;
-        result->next = SortedMerge(x, y->next);
+        result = b;
+        result->next = SortedMerge(a, b->next);
     }
     return (result);
 }
@@ -132,8 +132,8 @@ struct Node* result = NULL;
 void mergeSort(struct Node** headRef)
 {
     struct Node* head = *headRef;
-    struct Node* x;
-    struct Node* y;
+    struct Node* a;
+    struct Node* b;
 
     /* Base case -- length 0 or 1 */
     if ((head == NULL) || (head->next == NULL)) 
@@ -142,14 +142,14 @@ void mergeSort(struct Node** headRef)
     }
 
     /* Split head into 'a' and 'b' sublists */
-    Split(head, &x, &y);
+    FrontBackSplit(head, &a, &b);
 
     /* Recursively sort the sublists */
-    mergeSort(&x);
-    mergeSort(&y);
+    mergeSort(&a);
+    mergeSort(&b);
 
     /* answer = merge the two sorted lists together */
-    *headRef = SortMerge(x, y);
+    *headRef = SortedMerge(a, b);
 }
 
 /*Main Method*/
