@@ -1,105 +1,92 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "textFile.txt"
 
 struct Node
 {
 
 	int data; //occurences
-	struct Node *next;
-	unsigned char array[5];
+	struct Node *next; // next node
+	unsigned char array[5]; // array for the four bytes and the endline char
 };
 
+//structs for mergeSort
 struct Node* SortedMerge(struct Node* a, struct Node* b);
 void FrontBackSplit(struct Node* source,
                     struct Node** frontRef, struct Node** backRef);
-
-//Three cases:
-
-//Else if head's character array is the same as to_insert, according to strcmp, just iterate the number of occurrences.
-//Else move to the next element and repeat.
-
+/*Insert to the end of linked list and increment occurnece accordingly */
 void insert(struct Node** head_ref, char *new_data)
 {
-	/* 1. allocate node */
+	// create and allocate new node
 	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
-
+	//create last node and set to head reference node passed in as parameter
 	struct Node *last = *head_ref;
-
-	struct Node *last1 = *head_ref;
-	//    int i;
-	//    for(i = 0;, i < 5; i++)
-	//    {
-	//    	*new_data[i] == 0;
-	//    }
-	printf("Inside Insert\n");
+	// fill the array with the passed in char data
 	strcpy(new_node->array, new_data);
-
-	//    new_node->array  = new_data;
+	//intialize new node
 	new_node->data = 1;
-
 	// set next to null
 	new_node->next = NULL;
 
-	/* 4. If the Linked List is empty, then make the new node as head */
+	/*  If the Linked List is empty, then make the new node as head */
 	if (*head_ref == NULL)
 
 	{
-		printf("Head Ref is Null\n");
+		//set head to new node
 		*head_ref = new_node;
 		return;
 	}
-	//    if(strcmp(last->array, new_data) == 0)
-	//    {
-	//    	printf("hereelse1");
-	//    }
-
-	//traverse till the last node and change occurence accordi
-	// if the two values are the same up occurence
+	// if the nodes are the same
 	if(strcmp(last->array, new_data) == 0)
 	{
+		//increment occurence
 		last->data++;
 		return;
-
 	}
 	else
 	{
-
 		//traverse till last node
 		while(last->next != NULL)
 		{
+			// if nodes are the same
 			if(strcmp(last->array, new_data) == 0)
 			{
+				//increment occurneces
 				last->data++;
-
 				return;
 			}
+			// set last to the next node
 			last = last->next;
+			//if the nodes are the same
 			if(strcmp(last->array, new_data) == 0)
 			{
+				//increment occurences
 				last->data++;
 				return;
 			}
 		}
 	}
+	//set next node to new node
 	last->next = new_node;
 	return;
 }
-
+/*Print Linked List*/
 void printList(struct Node *node)
 {
+	//while there is a node to print
 	while (node != NULL)
 	{
+		//print statement
 		printf("%s->%d\n", node->array, node->data);
+		//node is set to next node
 		node = node->next;
 	}
 }
-
-
+/*split the list for sorting */
 void FrontBackSplit(struct Node* source,
                     struct Node** frontRef, struct Node** backRef)
 {
+	//declare nodes for sorting
     struct Node* fast;
     struct Node* slow;
     slow = source;
@@ -113,36 +100,35 @@ void FrontBackSplit(struct Node* source,
             fast = fast->next;
         }
     }
-
-    /* 'slow' is before the midpoint in the list, so split it in two
-    at that point. */
     *frontRef = source;
     *backRef = slow->next;
     slow->next = NULL;
 }
-
+/*Sorted Merge Method*/
 struct Node* SortedMerge(struct Node* a, struct Node* b)
 {
-    struct Node* result = NULL;
+// create node and intialize to null    
+struct Node* result = NULL;
 
-    /* Base cases */
     if (a == NULL)
         return (b);
     else if (b == NULL)
         return (a);
 
     /* Pick either a or b, and recur */
-    if (a->data >= b->data) {
+    if (a->data >= b->data) 
+    {
         result = a;
         result->next = SortedMerge(a->next, b);
     }
-    else {
+    else 
+    {
         result = b;
         result->next = SortedMerge(a, b->next);
     }
     return (result);
 }
-
+/*Merge Sort Method*/
 void mergeSort(struct Node** headRef)
 {
     struct Node* head = *headRef;
@@ -150,7 +136,8 @@ void mergeSort(struct Node** headRef)
     struct Node* b;
 
     /* Base case -- length 0 or 1 */
-    if ((head == NULL) || (head->next == NULL)) {
+    if ((head == NULL) || (head->next == NULL)) 
+    {
         return;
     }
 
@@ -165,18 +152,12 @@ void mergeSort(struct Node** headRef)
     *headRef = SortedMerge(a, b);
 }
 
-
+/*Main Method*/
 int main()
 {
-	//	//creates space holder for file
-// 	FILE *fp = NULL;
-	// opens file for reading
-// 	fp = fopen("textFile.txt" ,"rb");
 	struct Node* list = NULL;
 	int byte = 0;
 	int counter;
-
-	//	printf("%d", decimalToBinary(byte = fgetc(fp)));
 
 	//while there is still data
 	while ((byte = fgetc(stdin)) != EOF)
@@ -184,7 +165,7 @@ int main()
 
 		if(byte  >= 0xf0) //if byte is 1111 0000
 		{
-
+			
 			int byte2 = fgetc(stdin);
 			int byte3 = fgetc(stdin);
 			int byte4 = fgetc(stdin);
@@ -216,17 +197,7 @@ int main()
 			insert(&list,array);
 
 		}
-
-
 	}
 	mergeSort(&list);
 	printList(list);
-
-
-
-
-	//	append(&head, 6);
-	//	append(&head, 4);
-	//	printList(head);
-
 }
