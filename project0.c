@@ -169,9 +169,9 @@ void mergeSort(struct Node** headRef)
 int main()
 {
 	//	//creates space holder for file
-	FILE *fp = NULL;
+// 	FILE *fp = NULL;
 	// opens file for reading
-	fp = fopen("textFile.txt" ,"rb");
+// 	fp = fopen("textFile.txt" ,"rb");
 	struct Node* list = NULL;
 	int byte = 0;
 	int counter;
@@ -179,15 +179,15 @@ int main()
 	//	printf("%d", decimalToBinary(byte = fgetc(fp)));
 
 	//while there is still data
-	while ((byte = fgetc(fp)) != EOF)
+	while ((byte = fgetc(stdin)) != EOF)
 	{
 
 		if(byte  >= 0xf0) //if byte is 1111 0000
 		{
 
-			int byte2 = fgetc(fp);
-			int byte3 = fgetc(fp);
-			int byte4 = fgetc(fp);
+			int byte2 = fgetc(stdin);
+			int byte3 = fgetc(stdin);
+			int byte4 = fgetc(stdin);
 			unsigned char array[5] = {byte, byte2, byte3, byte4, '\0'};
 			insert(&list,array);
 
@@ -195,8 +195,8 @@ int main()
 		if((byte  >= 0xE0) && (byte < 0xF0)) //if byte is 1110 0000
 		{
 
-			int byte2 = fgetc(fp);
-			int byte3 = fgetc(fp);
+			int byte2 = fgetc(stdin);
+			int byte3 = fgetc(stdin);
 			unsigned char array[4] = {byte, byte2, byte3, '\0'};
 			insert(&list,array);
 
@@ -204,7 +204,7 @@ int main()
 		if((byte  >= 0xC0) && (byte < 0xE0)) //if byte is 1100 0000
 		{
 
-			int byte2 = fgetc(fp);
+			int byte2 = fgetc(stdin);
 			unsigned char array[3] = {byte, byte2, '\0'};
 			insert(&list,array);
 
