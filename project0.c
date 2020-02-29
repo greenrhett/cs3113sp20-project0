@@ -105,7 +105,7 @@ void Split(struct Node* s,
     slw->next = NULL;
 }
 /*Sorted Merge Method*/
-struct Node* SortMerge(struct Node* a, struct Node* b)
+struct Node* SortMerge(struct Node* x, struct Node* y)
 {
 // create node and intialize to null    
 struct Node* result = NULL;
