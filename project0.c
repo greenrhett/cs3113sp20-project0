@@ -10,10 +10,10 @@ struct Node
 	unsigned char array[5]; // array for the four bytes and the endline char
 };
 
-//structs for mergeSort
-struct Node* SortedMerge(struct Node* a, struct Node* b);
-void FrontBackSplit(struct Node* source,
-                    struct Node** frontRef, struct Node** backRef);
+//structs for merge
+struct Node* Sorted(struct Node* a, struct Node* b);
+void Split(struct Node* base,
+                    struct Node** front, struct Node** back);
 /*Insert to the end of linked list and increment occurnece accordingly */
 void insert(struct Node** head_ref, char *new_data)
 {
@@ -83,31 +83,31 @@ void printList(struct Node *node)
 	}
 }
 /*split the list for sorting */
-void FrontBackSplit(struct Node* source,
-                    struct Node** frontRef, struct Node** backRef)
+void Split(struct Node* base,
+                    struct Node** front, struct Node** back)
 {
 	//declare nodes for sorting
-    struct Node* fast;
-    struct Node* slow;
-    slow = source;
-    fast = source->next;
+    struct Node* f;
+    struct Node* s;
+    s = base;
+    f = base->next;
 
-    /* Advance 'fast' two nodes, and advance 'slow' one node */
-    while (fast != NULL) {
-        fast = fast->next;
-        if (fast != NULL) {
-            slow = slow->next;
-            fast = fast->next;
+    /* Advance 'f' two nodes, and advance 's' one node */
+    while (f != NULL) {
+        f = f->next;
+        if (f != NULL) {
+            s = s->next;
+            f = f->next;
         }
     }
-    *frontRef = source;
-    *backRef = slow->next;
-    slow->next = NULL;
+    *front = base;
+    *back = s->next;
+    s->next = NULL;
 }
 /*Sorted Merge Method*/
-struct Node* SortedMerge(struct Node* a, struct Node* b)
+struct Node* Sorted(struct Node* a, struct Node* b)
 {
-// create node and intialize to null    
+// create node and intialize to null
 struct Node* result = NULL;
 
     if (a == NULL)
@@ -116,40 +116,40 @@ struct Node* result = NULL;
         return (a);
 
     /* Pick either a or b, and recur */
-    if (a->data >= b->data) 
+    if (a->data >= b->data)
     {
         result = a;
-        result->next = SortedMerge(a->next, b);
+        result->next = Sorted(a->next, b);
     }
-    else 
+    else
     {
         result = b;
-        result->next = SortedMerge(a, b->next);
+        result->next = Sorted(a, b->next);
     }
     return (result);
 }
 /*Merge Sort Method*/
-void mergeSort(struct Node** headRef)
+void merge(struct Node** headRef)
 {
     struct Node* head = *headRef;
     struct Node* a;
     struct Node* b;
 
     /* Base case -- length 0 or 1 */
-    if ((head == NULL) || (head->next == NULL)) 
+    if ((head == NULL) || (head->next == NULL))
     {
         return;
     }
 
     /* Split head into 'a' and 'b' sublists */
-    FrontBackSplit(head, &a, &b);
+    Split(head, &a, &b);
 
     /* Recursively sort the sublists */
-    mergeSort(&a);
-    mergeSort(&b);
+    merge(&a);
+    merge(&b);
 
     /* answer = merge the two sorted lists together */
-    *headRef = SortedMerge(a, b);
+    *headRef = Sorted(a, b);
 }
 
 /*Main Method*/
@@ -165,7 +165,7 @@ int main()
 
 		if(byte  >= 0xf0) //if byte is 1111 0000
 		{
-			
+
 			int byte2 = fgetc(stdin);
 			int byte3 = fgetc(stdin);
 			int byte4 = fgetc(stdin);
@@ -198,6 +198,6 @@ int main()
 
 		}
 	}
-	mergeSort(&list);
+	merge(&list);
 	printList(list);
 }
