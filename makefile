@@ -1,8 +1,8 @@
 CC = gcc
 all: main
 
-main: main.o
-	$(CC) -o main main.o
+main: main.c
+	$(CC) -o project0 main.c
 
 clean:
 	rm -f main.o
